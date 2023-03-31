@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sentiment Analysis</title>
+  </head>
+  <body>
+    <h1>Sentiment Analysis</h1>
+    
+    <label for="text-input">Enter some text:</label>
+    <input type="text" id="text-input"><br><br>
+
+    <button onclick="analyze()">Analyze</button><br><br>
+
+    <div id="result"></div>
+
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script>
+      function analyze() {
+        const text = document.getElementById("text-input").value;
+        axios.post('https://text-sentiment-api.herokuapp.com/sentiment', {text: text})
+          .then(response => {
+            const result = response.data.result;
+            const sentiment = result.sentiment;
+            const scores = result.scores;
+            const output = `Sentiment: ${sentiment}<br>Positive: ${scores.positive}<br>Negative: ${scores.negative}<br>Neutral: ${scores.neutral}<br>Compound: ${scores.compound}`;
+            document.getElementById("result").innerHTML = output;
+          })
+          .catch(error => console.error(error));
+      }
+    </script>
+  </body>
+</html>
