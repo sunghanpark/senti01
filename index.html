@@ -14,18 +14,20 @@
     <div id="result"></div>
 
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/textblob-browser@0.16.0/dist/textblob.min.js"></script>
     <script>
       function analyze() {
         const text = document.getElementById("text-input").value;
-        axios.post('https://text-sentiment-api.herokuapp.com/sentiment', {text: text})
-          .then(response => {
-            const result = response.data.result;
-            const sentiment = result.sentiment;
-            const scores = result.scores;
-            const output = `Sentiment: ${sentiment}<br>Positive: ${scores.positive}<br>Negative: ${scores.negative}<br>Neutral: ${scores.neutral}<br>Compound: ${scores.compound}`;
-            document.getElementById("result").innerHTML = output;
-          })
-          .catch(error => console.error(error));
+        const blob = TextBlob(text);
+        const sentiment = blob.sentiment.polarity;
+        const scores = {
+          positive: sentiment > 0 ? sentiment : 0,
+          negative: sentiment < 0 ? -sentiment : 0,
+          neutral: sentiment == 0 ? 1 : 0,
+          compound: sentiment
+        };
+        const output = `Sentiment: ${sentiment}<br>Positive: ${scores.positive}<br>Negative: ${scores.negative}<br>Neutral: ${scores.neutral}<br>Compound: ${scores.compound}`;
+        document.getElementById("result").innerHTML = output;
       }
     </script>
   </body>
